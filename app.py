@@ -5,6 +5,7 @@
 
 import web, os, sys, datetime, json
 sys.path.append(os.path.dirname(__file__))
+import gpxutils, StringIO
 #import conf
 from jinja2 import Environment,FileSystemLoader
 
@@ -13,11 +14,16 @@ class Api(object):
 		dataDb = web.ctx.dataDb
 		result = dataDb.select("pois")
 
-		out = []
-		for row in result:
-			out.append({"name":row["name"], "lat": row["lat"], "lon": row["lon"], "dataset": row["dataset"], "version": row["version"]})
+		out = StringIO.StringIO()
+		gpxWriter = gpxutils.GpxWriter(out)
 
-		return json.dumps(out)
+		for row in result:
+			gpxWriter.Waypoint(row["lat"], row["lon"], name=row["name"])
+			#gpxWriter.append({"name":row["name"], "lat": row["lat"], "lon": row["lon"], "dataset": row["dataset"], "version": row["version"]})
+
+		del gpxWriter
+
+		return out.getvalue()
 
 urls = (
 	'/api', 'Api',
@@ -43,7 +49,7 @@ def InitDatabaseConn():
 	#web.ctx.users = web.database(dbn='sqlite', db=os.path.join(curdir, 'users.db'))
 	web.ctx.session = session
 
-#web.config.debug = conf.debug
+web.config.debug = 1
 app = web.application(urls, globals())
 curdir = os.path.dirname(__file__)
 app.add_processor(web.loadhook(InitDatabaseConn))

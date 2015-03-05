@@ -9,8 +9,8 @@ class GpxWriter:
 	def __init__(self, fi):
 		self.fi = fi
 		#self.fi = codecs.open(filename, "w", "utf-8")
-		self.fi.write('<?xml version="1.0" encoding="UTF-8" standalone="no" ?>\n')
-		self.fi.write('<gpx xmlns="http://www.topografix.com/GPX/1/1" creator="" version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">')
+		self.fi.write('<?xml version="1.0" encoding="UTF-8" ?>\n')
+		self.fi.write('<gpx version="1.0" creator="gpxutils.py" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/0" xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">')
 
 	def StartTrack(self, name=None):
 		self.fi.write("<trk>\n")
