@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?><gpx version="1.0" creator="GPSLogger - http://gpslogger.mendhak.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/0" xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd"><time>2015-03-05T16:11:31Z</time>
+<wpt lat="51.23653355" lon="-0.60861156"><ele>120.5999984741211</ele><time>2015-03-05T16:24:30Z</time><name>vcm8</name><src>gps</src></wpt>
+
+<wpt lat="51.23659082" lon="-0.60755854"><ele>121.30000305175781</ele><time>2015-03-05T16:23:24Z</time><name>vsm7</name><src>gps</src></wpt>
+
+<wpt lat="51.2370559" lon="-0.60810942"><ele>103.80000305175781</ele><time>2015-03-05T16:22:34Z</time><name>vcm6</name><src>gps</src></wpt>
+
+<wpt lat="51.23721451" lon="-0.60816195"><ele>110.69999694824219</ele><time>2015-03-05T16:22:13Z</time><name>vcm5</name><src>gps</src></wpt>
+
+<wpt lat="51.23758904" lon="-0.60894735"><ele>116.30000305175781</ele><time>2015-03-05T16:21:21Z</time><name>vsm4</name><src>gps</src></wpt>
+
+<wpt lat="51.23770527" lon="-0.60994969"><ele>117.0999984741211</ele><time>2015-03-05T16:20:34Z</time><name>vcm3</name><src>gps</src></wpt>
+
+<wpt lat="51.23698034" lon="-0.61076331"><ele>131.6999969482422</ele><time>2015-03-05T16:20:08Z</time><name>vcm2</name><src>gps</src></wpt>
+
+<wpt lat="51.23633821" lon="-0.61156151"><ele>121.69999694824219</ele><time>2015-03-05T16:18:01Z</time><name>w2</name><src>gps</src></wpt>
+
+<wpt lat="51.23625355" lon="-0.61159254"><ele>121.5999984741211</ele><time>2015-03-05T16:17:43Z</time><name>w</name><src>gps</src></wpt>
+
+<wpt lat="51.23549335" lon="-0.61166414"><ele>122.19999694824219</ele><time>2015-03-05T16:16:39Z</time><name>vcm1</name><src>gps</src></wpt>
+
+<wpt lat="51.23545419" lon="-0.61215583"><ele>123.69999694824219</ele><time>2015-03-05T16:16:07Z</time><name>4</name><src>gps</src></wpt>
+
+<wpt lat="51.23583563" lon="-0.6119113"><ele>129.60000610351563</ele><time>2015-03-05T16:15:24Z</time><name>3</name><src>gps</src></wpt>
+
+<wpt lat="51.23668053" lon="-0.61377932"><ele>123.0</ele><time>2015-03-05T16:13:17Z</time><name>vsp</name><src>gps</src></wpt>
+
+<wpt lat="51.23636181" lon="-0.61351162"><ele>129.3000030517578</ele><time>2015-03-05T16:12:29Z</time><name>vsc2</name><src>gps</src></wpt>
+
+<wpt lat="51.23627623" lon="-0.61289162"><ele>130.10000610351563</ele><time>2015-03-05T16:11:42Z</time><name>vsp1</name><src>gps</src></wpt>
+</gpx>
