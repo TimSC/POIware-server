@@ -31,7 +31,7 @@ class GpxWriter:
 	def EndTrack(self):
 		self.fi.write("</trk>")
 
-	def Waypoint(self, lat, lon, name=None, ele=None, time=None, description = None):
+	def Waypoint(self, lat, lon, name=None, ele=None, time=None, description = None, extensions = None):
 		self.fi.write('<wpt lat="'+str(lat)+'" lon="'+str(lon)+'">\n')
 		print ele
 		if ele is not None: self.fi.write('<ele>'+float(ele)+'</ele>\n')
@@ -42,6 +42,18 @@ class GpxWriter:
 		#<link href=""><text></text></link>
 		#<sym></sym>
 		#<type></type>
+
+		if extensions is not None:
+
+			self.fi.write(u'<extensions>\n')
+			for extension in extensions:
+				self.fi.write(u'<{0}>\n'.format(extension))
+				extData = extensions[extension]
+				for k in extData:
+					self.fi.write(u'<{0}>{1}</{0}>\n'.format(k, escape(str(extData[k]))))
+				self.fi.write(u'</{0}>\n'.format(extension))
+			self.fi.write(u'</extensions>\n')
+
 		self.fi.write('</wpt>\n')
 
 	def __del__(self):

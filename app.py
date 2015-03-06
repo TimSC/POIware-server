@@ -11,6 +11,12 @@ from jinja2 import Environment,FileSystemLoader
 
 class Api(object):
 	def GET(self):
+		return self.Render()
+
+	def POST(self):
+		return self.Render()
+
+	def Render(self):
 		dataDb = web.ctx.dataDb
 		result = dataDb.select("pois")
 
@@ -18,11 +24,14 @@ class Api(object):
 		gpxWriter = gpxutils.GpxWriter(out)
 
 		for row in result:
-			gpxWriter.Waypoint(row["lat"], row["lon"], name=row["name"])
+			extensions = {"poiware":{"version": row["version"], "poiid": row["poiid"]}}
+
+			gpxWriter.Waypoint(row["lat"], row["lon"], name=row["name"], extensions = extensions)
 			#gpxWriter.append({"name":row["name"], "lat": row["lat"], "lon": row["lon"], "dataset": row["dataset"], "version": row["version"]})
 
 		del gpxWriter
 
+		web.header('Content-Type', 'text/xml')
 		return out.getvalue()
 
 urls = (
