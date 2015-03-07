@@ -8,6 +8,7 @@ sys.path.append(os.path.dirname(__file__))
 import gpxutils, StringIO
 #import conf
 from jinja2 import Environment,FileSystemLoader
+from xml.sax.saxutils import escape
 
 class Api(object):
 	def GET(self):
@@ -16,23 +17,90 @@ class Api(object):
 	def POST(self):
 		return self.Render()
 
+	def RequireParams(self, webInput, params):
+		status = None
+		for p in params:
+			if p not in webInput:
+				status = "400 Bad Request"
+				return status
+		return None
+
 	def Render(self):
+		webInput = web.input()
 		dataDb = web.ctx.dataDb
-		result = dataDb.select("pois")
+		
+		if "action" not in webInput:
+			web.ctx.status = '400 Bad Request'
+			web.header('Content-Type', 'text/plain')
+			return "An action must be defined"
 
-		out = StringIO.StringIO()
-		gpxWriter = gpxutils.GpxWriter(out)
+		action = webInput["action"]
 
-		for row in result:
-			extensions = {"poiware":{"version": row["version"], "poiid": row["poiid"]}}
+		if action == "query":
+			requiredParams = ["lat", "lon"]
+			stat = self.RequireParams(webInput, requiredParams)
+			if stat is not None:
+				web.ctx.status = stat
+				web.header('Content-Type', 'text/plain')
+				return "Required parameters" + str(requiredParams)
 
-			gpxWriter.Waypoint(row["lat"], row["lon"], name=row["name"], extensions = extensions)
-			#gpxWriter.append({"name":row["name"], "lat": row["lat"], "lon": row["lon"], "dataset": row["dataset"], "version": row["version"]})
+			result = dataDb.select("pois")
 
-		del gpxWriter
+			out = StringIO.StringIO()
+			gpxWriter = gpxutils.GpxWriter(out)
+			lat = float(webInput["lat"])
+			lon = float(webInput["lon"])
 
-		web.header('Content-Type', 'text/xml')
-		return out.getvalue()
+			for row in result:
+				extensions = {"poiware":{"version": row["version"], "poiid": row["poiid"]}}
+
+				gpxWriter.Waypoint(row["lat"], row["lon"], name=row["name"], extensions = extensions)
+				#gpxWriter.append({"name":row["name"], "lat": row["lat"], "lon": row["lon"], "dataset": row["dataset"], "version": row["version"]})
+
+			del gpxWriter
+
+			web.header('Content-Type', 'text/xml')
+			return out.getvalue()
+
+		if action == "get":
+			requiredParams = ["poiid"]
+			stat = self.RequireParams(webInput, requiredParams)
+			if stat is not None:
+				web.ctx.status = stat
+				web.header('Content-Type', 'text/plain')
+				return "Required parameters" + str(requiredParams)
+
+			poiid = int(webInput["poiid"])
+			result = dataDb.select("pois", where="poiid=$poiid", vars={"poiid": poiid})
+			result = list(result)
+			if len(result) < 1:
+				web.ctx.status = '404 Not found'
+				web.header('Content-Type', 'text/plain')
+				return "Record not found"
+			rowResult = dict(result[0])
+
+			out = []
+			out.append('<?xml version="1.0" encoding="UTF-8" ?>\n')
+			out.append("<poi poiid='{0}' version='{1}'>\n".format(poiid, rowResult["version"]))
+	
+			del rowResult["poiid"]
+			del rowResult["version"]
+
+			for k in rowResult:
+				out.append("<{0}>".format(k))
+				out.append(escape(str(rowResult[k])))
+				out.append("</{0}>\n".format(k))
+
+			out.append("</poi>\n")
+
+			web.header('Content-Type', 'text/xml')
+
+
+
+			return "".join(out)
+
+		web.header('Content-Type', 'text/plain')
+		return "Unknown action"
 
 urls = (
 	'/api', 'Api',
