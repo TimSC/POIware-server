@@ -44,7 +44,7 @@ class Api(object):
 				web.header('Content-Type', 'text/plain')
 				return "Required parameters" + str(requiredParams)
 
-			result = dataDb.select("pois")
+			result = dataDb.select("pois", limit = 1000)
 
 			out = StringIO.StringIO()
 			gpxWriter = gpxutils.GpxWriter(out)

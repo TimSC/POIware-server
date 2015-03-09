@@ -16,7 +16,7 @@ if __name__ == "__main__":
 	postData = "action=query&lat=51.&lon=0."
 	body, header = urlutil.Post(url, postData)
 	assert urlutil.HeaderResponseCode(header) == "HTTP/1.1 200 OK"
-	#print body
+	print body
 
 	postData = "action=get"
 	body, header = urlutil.Post(url, postData)
