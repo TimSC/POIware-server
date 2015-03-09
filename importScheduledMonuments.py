@@ -10,7 +10,7 @@
 #5 SchemaData
 #6 SimpleData
 
-import bz2, json, importgpx, web, os
+import bz2, json, poidatabase, web, os
 import xml.parsers.expat
 from shapely.geometry import Polygon, LineString, LinearRing, Point, MultiPolygon, MultiPoint
 import shapely.wkt
@@ -187,7 +187,7 @@ if __name__=="__main__":
 	db = web.database(dbn='sqlite', db=os.path.join(curdir, 'data.db'))
 	t = db.transaction()
 	inFi = bz2.BZ2File("SM.kml.bz2", "r")
-	dbInt = importgpx.DbInt(db)
+	dbInt = poidatabase.DbInt(db)
 
 	datasetId = dbInt.AddDataset("Sch Mon", 1, {"public": 1})
 

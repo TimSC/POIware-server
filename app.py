@@ -3,9 +3,9 @@
 
 #sudo apt-get install apache2 libapache2-mod-wsgi python-dev python-jinja2
 
-import web, os, sys, datetime, json
+import web, os, sys, datetime, json, math
 sys.path.append(os.path.dirname(__file__))
-import gpxutils, StringIO
+import poidatabase, StringIO, gpxutils
 #import conf
 from jinja2 import Environment,FileSystemLoader
 from xml.sax.saxutils import escape
@@ -28,6 +28,7 @@ class Api(object):
 	def Render(self):
 		webInput = web.input()
 		dataDb = web.ctx.dataDb
+		dataDbInt = poidatabase.DbInt(dataDb)
 		
 		if "action" not in webInput:
 			web.ctx.status = '400 Bad Request'
@@ -44,7 +45,11 @@ class Api(object):
 				web.header('Content-Type', 'text/plain')
 				return "Required parameters" + str(requiredParams)
 
-			result = dataDb.select("pois", limit = 1000)
+			lat = float(webInput["lat"])
+			lon = float(webInput["lon"])
+
+			#Spatial query
+			result = dataDbInt.GetRecordsNear(lat, lon)
 
 			out = StringIO.StringIO()
 			gpxWriter = gpxutils.GpxWriter(out)
