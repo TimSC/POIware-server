@@ -75,29 +75,42 @@ class Api(object):
 				web.header('Content-Type', 'text/plain')
 				return "Required parameters" + str(requiredParams)
 
-			poiid = int(webInput["poiid"])
-			result = dataDb.select("pois", where="poiid=$poiid", vars={"poiid": poiid})
+			poiidsSplit = webInput["poiid"].split(",")
+			poiids = map(int, poiidsSplit)
+	
+			sqlFrag = []
+			sqlArgs = {}
+			for i, poiid in enumerate(poiids):
+				arg = "a{0}".format(i)
+				sqlFrag.append("poiid=${0}".format(arg))
+				sqlArgs[arg] = poiid
+			sqlStatement = " OR ".join(sqlFrag)
+
+			result = dataDb.select("pois", where=sqlStatement, vars=sqlArgs)
 			result = list(result)
 			if len(result) < 1:
 				web.ctx.status = '404 Not found'
 				web.header('Content-Type', 'text/plain')
 				return "Record not found"
-			rowResult = dict(result[0])
 
 			out = []
 			out.append('<?xml version="1.0" encoding="UTF-8" ?>\n')
-			out.append("<poi poiid='{0}' version='{1}'>\n".format(poiid, rowResult["version"]))
+			out.append("<pois>\n")
+			for rowResult in result:
+				rowResult = dict(rowResult)
+
+				out.append("<poi poiid='{0}' version='{1}'>\n".format(rowResult["poiid"], rowResult["version"]))
 	
-			del rowResult["poiid"]
-			del rowResult["version"]
+				del rowResult["poiid"]
+				del rowResult["version"]
 
-			for k in rowResult:
-				out.append("<{0}>".format(k))
-				out.append(escape(str(rowResult[k])))
-				out.append("</{0}>\n".format(k))
+				for k in rowResult:
+					out.append("<{0}>".format(k))
+					out.append(escape(str(rowResult[k])))
+					out.append("</{0}>\n".format(k))
 
-			out.append("</poi>\n")
-
+				out.append("</poi>\n")
+			out.append("</pois>\n")
 			web.header('Content-Type', 'text/xml')
 
 
