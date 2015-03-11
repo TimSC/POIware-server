@@ -27,6 +27,7 @@ class DistLatLon(object):
 class DbInt(object):
 	def __init__(self, db):
 		self.db = db
+		self.InitSchema()
 
 	def InitSchema(self):
 		self.db.query('CREATE TABLE IF NOT EXISTS pois(poiid INTEGER PRIMARY KEY, dataset INTEGER, name TEXT, lat REAL, lon REAL, data TEXT, version INTEGER)')
@@ -130,4 +131,14 @@ class DbInt(object):
 			results = self.db.select("pois", where="poiid=$poiid", vars={"poiid": poiid})
 			collectResults.extend([dict(tmp) for tmp in results])
 		return collectResults
+
+if __name__ == "__main__":
+	pass
+        curdir = os.path.dirname(__file__)
+        db = web.database(dbn='sqlite', db=os.path.join(curdir, 'data.db'))
+        dbInt = DbInt(db)
+	dbInt.DropEverything()
+
+       
+        del dbInt
 
