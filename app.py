@@ -47,9 +47,13 @@ class Api(object):
 
 			lat = float(webInput["lat"])
 			lon = float(webInput["lon"])
+			datasetsFilter = None
+			if "datasets" in webInput:
+				datasetsFilter = map(int, webInput["datasets"].split(","))
+
 
 			#Spatial query
-			result = dataDbInt.GetRecordsNear(lat, lon)
+			result = dataDbInt.GetRecordsNear(lat, lon, datasetsFilter = datasetsFilter)
 
 			out = StringIO.StringIO()
 			gpxWriter = gpxutils.GpxWriter(out)
@@ -57,7 +61,7 @@ class Api(object):
 			lon = float(webInput["lon"])
 
 			for row in result:
-				extensions = {"poiware":{"version": row["version"], "poiid": row["poiid"]}}
+				extensions = {"poiware":{"version": row["version"], "poiid": row["poiid"], "dataset": row["dataset"]}}
 
 				gpxWriter.Waypoint(row["lat"], row["lon"], name=row["name"], extensions = extensions)
 				#gpxWriter.append({"name":row["name"], "lat": row["lat"], "lon": row["lon"], "dataset": row["dataset"], "version": row["version"]})

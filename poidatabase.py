@@ -69,7 +69,7 @@ class DbInt(object):
 		datasetId = self.db.insert("datasets", owner = 1, name = "Test data", public = 1)
 		return datasetId
 
-	def GetRecordsNear(self, lat, lon, radius = 10.0, maxRecs = 100):
+	def GetRecordsNear(self, lat, lon, radius = 10.0, maxRecs = 100, datasetsFilter = None):
 
 		latHWidth = math.degrees(radius / 6371.)
 		lonHWidth = math.degrees(radius / (6371. * math.cos(math.radians(lat))))
@@ -85,13 +85,22 @@ class DbInt(object):
 			conds.append("minLon>=$minLon AND maxLon<=$maxLon")
 			vrs['minLon'] = lon-lonHWidth
 			vrs['maxLon'] = lon+lonHWidth
+
+		if datasetsFilter is not None:
+			filts = []
+			for i, dataset in enumerate(datasetsFilter):
+				vname = "df{0}".format(i)
+				filts.append("dataset = ${0}".format(vname))
+				vrs[vname] = dataset
+			conds.append("("+" OR ".join(filts)+")")
 	
 		if len(conds) > 0:
 			cond = " AND ".join(conds)
 		else:
 			cond = "1=1"
 
-		results = self.db.select("pos", where=cond, vars=vrs)
+
+		results = self.db.query("SELECT * FROM pos JOIN pois ON pos.id = pois.poiid WHERE "+cond, vars=vrs)
 		sortableResults = []
 
 		if lat is not None and lon is not None:
